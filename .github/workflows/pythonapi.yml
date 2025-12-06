@@ -1,0 +1,65 @@
+name: Deploy Python API
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  APP_NAME: pythonapi
+  IMAGE: ghcr.io/${{ github.repository }}/pythonapi:latest
+  APP_DIR: /apps/pythonapi
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+      # IMPORTANT: download only the pythonapi project
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # BUILD
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE .
+
+      - name: Push Docker image
+        run: |
+          docker push $IMAGE
+
+      # DEPLOY
+
+      - name: Create app directory if not exists
+        run: |
+          mkdir -p $APP_DIR
+
+      - name: Stop old container if exists
+        run: |
+          docker stop $APP_NAME || true
+          docker rm $APP_NAME || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            --name $APP_NAME \
+            -p 8080:8080 \
+            -v $APP_DIR:/data \
+            --restart always \
+            $IMAGE
+
+      - name: Show status
+        run: |
+          docker ps
