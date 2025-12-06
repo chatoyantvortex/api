@@ -27,7 +27,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # --- BUILD ---
       - name: Build Docker image
         run: docker build -t $IMAGE .
 
@@ -57,4 +56,3 @@ jobs:
       - name: Show status
         run: docker ps
 
-        
