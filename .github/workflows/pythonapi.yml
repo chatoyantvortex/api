@@ -31,7 +31,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # BUILD
-
       - name: Build Docker image
         run: |
           docker build -t $IMAGE .
