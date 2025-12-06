@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-      # IMPORTANT: download only the pythonapi project
+      # IMPORTANT: download only the pythonapi project 
         uses: actions/checkout@v4
 
       - name: Log in to GHCR
