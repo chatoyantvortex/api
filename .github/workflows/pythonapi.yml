@@ -8,7 +8,7 @@ on:
 env:
   APP_NAME: pythonapi
   IMAGE: ghcr.io/${{ github.repository }}/pythonapi:latest
-  APP_DIR: /apps/pythonapi
+  APP_DIR: /opt/apps/pythonapi
 
 jobs:
   build-and-deploy:
