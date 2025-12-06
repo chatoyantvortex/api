@@ -15,12 +15,11 @@ jobs:
     runs-on: self-hosted
 
     permissions:
-      contents: read
-      packages: write
+      contents: read      # checkout
+      packages: write     # push to GHCR
 
     steps:
-      - name: Checkout
-      # IMPORTANT: download only the pythonapi project 
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Log in to GHCR
@@ -30,7 +29,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # BUILD
+      # --- BUILD ---
       - name: Build Docker image
         run: |
           docker build -t $IMAGE .
@@ -39,11 +38,11 @@ jobs:
         run: |
           docker push $IMAGE
 
-      # DEPLOY
-
+      # --- DEPLOY ---
       - name: Create app directory if not exists
         run: |
-          mkdir -p $APP_DIR
+          sudo mkdir -p $APP_DIR
+          sudo chown $USER:$USER $APP_DIR
 
       - name: Stop old container if exists
         run: |
